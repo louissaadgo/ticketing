@@ -15,17 +15,26 @@ func Signin(c *fiber.Ctx) error {
 
 func Signup(c *fiber.Ctx) error {
 
-	//Validating received data type
 	user := models.User{}
+
+	//Validating received data type
 	if err := c.BodyParser(&user); err != nil {
+		validationError := models.Error{}
+		validationError.Message = "Received invalid data type"
+		errorResponse := models.ErrorResponse{}
+		errorResponse.Errors = append(errorResponse.Errors, validationError)
 		c.Status(400)
-		return c.SendString("Received invalid data type")
+		return c.JSON(errorResponse)
 	}
 
 	//Validating received data
 	if isValid := user.ValidateUserModel(); !isValid {
+		validationError := models.Error{}
+		validationError.Message = "Received invalid data"
+		errorResponse := models.ErrorResponse{}
+		errorResponse.Errors = append(errorResponse.Errors, validationError)
 		c.Status(400)
-		return c.SendString("Received invalid data")
+		return c.JSON(errorResponse)
 	}
 
 	return c.SendString("Successful signup")
