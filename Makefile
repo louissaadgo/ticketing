@@ -3,4 +3,6 @@ run:
 stop:
 	kubectl delete service auth-srv \
 	&& kubectl delete deployment auth-depl \
-	&& kubectl delete ingress ingress-service
+	&& kubectl delete ingress ingress-service \
+	&& kubectl delete service auth-mongo-srv \
+	&& kubectl delete deployment auth-mongo-depl
