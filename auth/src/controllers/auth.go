@@ -18,7 +18,62 @@ func GetCurrentUser(c *fiber.Ctx) error {
 }
 
 func Signin(c *fiber.Ctx) error {
-	return c.SendString("Hi there signin")
+
+	user := models.User{}
+
+	//Validating received data type
+	if err := c.BodyParser(&user); err != nil {
+		validationError := models.Error{}
+		validationError.Message = "Received invalid data type"
+		errorResponse := models.ErrorResponse{}
+		errorResponse.Errors = append(errorResponse.Errors, validationError)
+		c.Status(400)
+		return c.JSON(errorResponse)
+	}
+
+	//Validating received data
+	if isValid := user.ValidateUserModel(); !isValid {
+		validationError := models.Error{}
+		validationError.Message = "Received invalid data"
+		errorResponse := models.ErrorResponse{}
+		errorResponse.Errors = append(errorResponse.Errors, validationError)
+		c.Status(400)
+		return c.JSON(errorResponse)
+	}
+
+	//Cheking if user already exists
+	userCheck := models.User{}
+	err := database.DB.FindOne(context.TODO(), bson.M{"email": user.Email}).Decode(&userCheck)
+	if err == mongo.ErrNoDocuments {
+		queryError := models.Error{
+			Message: "User not found",
+		}
+		queryErrorResponse := models.ErrorResponse{}
+		queryErrorResponse.Errors = append(queryErrorResponse.Errors, queryError)
+		c.Status(400)
+		return c.JSON(queryErrorResponse)
+	}
+
+	//Checking credentials
+	isValid := user.CompareHashAndPassword(userCheck.Password)
+	if !isValid {
+		validationError := models.Error{}
+		validationError.Message = "Invalid password"
+		errorResponse := models.ErrorResponse{}
+		errorResponse.Errors = append(errorResponse.Errors, validationError)
+		c.Status(400)
+		return c.JSON(errorResponse)
+	}
+
+	//Creating and sending a jwt cookie
+	cookie := fiber.Cookie{
+		Name:  "jwt",
+		Value: generateJWT(user.Email),
+	}
+	c.Cookie(&cookie)
+
+	user.Password = ""
+	return c.JSON(user)
 }
 
 func Signup(c *fiber.Ctx) error {
