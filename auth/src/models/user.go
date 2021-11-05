@@ -1,8 +1,8 @@
 package models
 
 type User struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=7,max=30"`
+	Email    string `json:"email" bson:"email"`
+	Password string `json:"password" bson:"password"`
 }
 
 func (user *User) ValidateUserModel() bool {

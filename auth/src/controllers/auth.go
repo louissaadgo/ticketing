@@ -1,8 +1,13 @@
 package controllers
 
 import (
+	"context"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/louissaadgo/ticketing/auth/src/database"
 	"github.com/louissaadgo/ticketing/auth/src/models"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func GetCurrentUser(c *fiber.Ctx) error {
@@ -36,6 +41,13 @@ func Signup(c *fiber.Ctx) error {
 		c.Status(400)
 		return c.JSON(errorResponse)
 	}
+
+	err := database.DB.FindOne(context.TODO(), bson.D{{"email", user.Email}})
+	if err.Err() != mongo.ErrNoDocuments {
+		return c.SendString("email in use")
+	}
+
+	database.DB.InsertOne(context.TODO(), user)
 
 	return c.SendString("Successful signup")
 }
