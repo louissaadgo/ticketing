@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -14,7 +15,17 @@ import (
 )
 
 func GetCurrentUser(c *fiber.Ctx) error {
-	return c.SendString("Hi there CurrentUser")
+
+	token := c.Cookies("jwt")
+	valid, email := validateJWT(token)
+	if !valid {
+		return c.JSON(fiber.Map{
+			"currentUser": nil,
+		})
+	}
+	return c.JSON(fiber.Map{
+		"currentUser": email,
+	})
 }
 
 func Signin(c *fiber.Ctx) error {
@@ -157,4 +168,19 @@ func generateJWT(email string) string {
 	tokenString, _ := token.SignedString(signingKey)
 
 	return tokenString
+}
+
+func validateJWT(token string) (bool, string) {
+	//Migrate to paseto
+	newToken, _ := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+		}
+		return []byte(os.Getenv("JWT_KEY")), nil
+	})
+	if _, ok := newToken.Claims.(jwt.MapClaims); ok && newToken.Valid {
+		return true, fmt.Sprintf("%v", newToken.Claims.(jwt.MapClaims)["email"])
+	} else {
+		return false, ""
+	}
 }
