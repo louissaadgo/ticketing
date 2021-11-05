@@ -149,7 +149,14 @@ func Signup(c *fiber.Ctx) error {
 }
 
 func Signout(c *fiber.Ctx) error {
-	return c.SendString("Hi there signout")
+
+	cookie := fiber.Cookie{
+		Name:    "jwt",
+		Expires: time.Now().Add(-time.Minute),
+	}
+	c.Cookie(&cookie)
+
+	return c.SendString("Bye Bye")
 }
 
 func generateJWT(email string) string {
