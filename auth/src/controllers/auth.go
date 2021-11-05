@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -83,7 +84,8 @@ func Signout(c *fiber.Ctx) error {
 
 func generateJWT(id int, email string) string {
 
-	signingKey := []byte("12345")
+	//move env variable checking to when the app starts
+	signingKey := []byte(os.Getenv("JWT_KEY"))
 
 	token := jwt.New(jwt.SigningMethodHS256)
 
