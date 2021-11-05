@@ -67,13 +67,17 @@ func Signup(c *fiber.Ctx) error {
 		return c.JSON(errorResponse)
 	}
 
+	//Inserting user into the db
 	database.DB.InsertOne(context.TODO(), user)
 
+	//Creating and sending a jwt cookie
 	cookie := fiber.Cookie{
 		Name:  "jwt",
-		Value: generateJWT(24, user.Email),
+		Value: generateJWT(user.Email),
 	}
 	c.Cookie(&cookie)
+
+	user.Password = ""
 
 	return c.JSON(user)
 }
@@ -82,7 +86,7 @@ func Signout(c *fiber.Ctx) error {
 	return c.SendString("Hi there signout")
 }
 
-func generateJWT(id int, email string) string {
+func generateJWT(email string) string {
 
 	//move env variable checking to when the app starts
 	signingKey := []byte(os.Getenv("JWT_KEY"))
@@ -91,7 +95,6 @@ func generateJWT(id int, email string) string {
 
 	claims := token.Claims.(jwt.MapClaims)
 
-	claims["id"] = id
 	claims["email"] = email
 	claims["iss"] = "auth"
 	claims["exp"] = time.Now().Add(time.Minute * 5).Unix()
