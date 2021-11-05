@@ -13,7 +13,7 @@ func (user *User) ValidateUserModel() bool {
 }
 
 func (user *User) HashPassword() bool {
-	sb, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	sb, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	user.Password = string(sb)
 	return err == nil
 }

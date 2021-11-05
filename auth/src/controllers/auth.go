@@ -54,9 +54,19 @@ func Signup(c *fiber.Ctx) error {
 		return c.JSON(queryErrorResponse)
 	}
 
+	//Hashing the password
+	if err := user.HashPassword(); !err {
+		hashingError := models.Error{}
+		hashingError.Message = "Unable to hash password"
+		errorResponse := models.ErrorResponse{}
+		errorResponse.Errors = append(errorResponse.Errors, hashingError)
+		c.Status(400)
+		return c.JSON(errorResponse)
+	}
+
 	database.DB.InsertOne(context.TODO(), user)
 
-	return c.SendString("Successful signup")
+	return c.JSON(user)
 }
 
 func Signout(c *fiber.Ctx) error {
