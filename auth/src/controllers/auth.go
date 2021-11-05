@@ -42,9 +42,16 @@ func Signup(c *fiber.Ctx) error {
 		return c.JSON(errorResponse)
 	}
 
-	err := database.DB.FindOne(context.TODO(), bson.D{{"email", user.Email}})
-	if err.Err() != mongo.ErrNoDocuments {
-		return c.SendString("email in use")
+	//Cheking if user already exists
+	query := database.DB.FindOne(context.TODO(), bson.M{"email": user.Email})
+	if query.Err() != mongo.ErrNoDocuments {
+		queryError := models.Error{
+			Message: "Email already in use",
+		}
+		queryErrorResponse := models.ErrorResponse{}
+		queryErrorResponse.Errors = append(queryErrorResponse.Errors, queryError)
+		c.Status(400)
+		return c.JSON(queryErrorResponse)
 	}
 
 	database.DB.InsertOne(context.TODO(), user)
