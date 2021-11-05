@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"context"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt"
 	"github.com/louissaadgo/ticketing/auth/src/database"
 	"github.com/louissaadgo/ticketing/auth/src/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -66,9 +68,33 @@ func Signup(c *fiber.Ctx) error {
 
 	database.DB.InsertOne(context.TODO(), user)
 
+	cookie := fiber.Cookie{
+		Name:  "jwt",
+		Value: generateJWT(24, user.Email),
+	}
+	c.Cookie(&cookie)
+
 	return c.JSON(user)
 }
 
 func Signout(c *fiber.Ctx) error {
 	return c.SendString("Hi there signout")
+}
+
+func generateJWT(id int, email string) string {
+
+	signingKey := []byte("12345")
+
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	claims := token.Claims.(jwt.MapClaims)
+
+	claims["id"] = id
+	claims["email"] = email
+	claims["iss"] = "auth"
+	claims["exp"] = time.Now().Add(time.Minute * 5).Unix()
+
+	tokenString, _ := token.SignedString(signingKey)
+
+	return tokenString
 }

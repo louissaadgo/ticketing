@@ -2,7 +2,12 @@ module github.com/louissaadgo/ticketing/auth
 
 go 1.17
 
-require github.com/gofiber/fiber/v2 v2.21.0
+require (
+	github.com/gofiber/fiber/v2 v2.21.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	go.mongodb.org/mongo-driver v1.7.4
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.2 // indirect
@@ -17,8 +22,6 @@ require (
 	github.com/xdg-go/scram v1.0.2 // indirect
 	github.com/xdg-go/stringprep v1.0.2 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
-	go.mongodb.org/mongo-driver v1.7.4 // indirect
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
 	golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069 // indirect
 	golang.org/x/text v0.3.6 // indirect
