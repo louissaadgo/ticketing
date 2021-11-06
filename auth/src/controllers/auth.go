@@ -2,21 +2,20 @@ package controllers
 
 import (
 	"context"
-	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt"
 	"github.com/louissaadgo/ticketing/auth/src/database"
 	"github.com/louissaadgo/ticketing/auth/src/models"
+	"github.com/louissaadgo/ticketing/auth/src/token"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func GetCurrentUser(c *fiber.Ctx) error {
-	str := c.GetRespHeader("CurrentUser")
+	email := c.GetRespHeader("CurrentUser")
 	return c.JSON(fiber.Map{
-		"currentUser": str,
+		"currentUser": email,
 	})
 }
 
@@ -68,10 +67,19 @@ func Signin(c *fiber.Ctx) error {
 		return c.JSON(errorResponse)
 	}
 
-	//Creating and sending a jwt cookie
+	//Creating and sending a paseto cookie
+	token, err := token.GeneratePasetoToken(user.Email)
+	if err != nil {
+		tokenError := models.Error{}
+		tokenError.Message = "Token creation failed"
+		errorResponse := models.ErrorResponse{}
+		errorResponse.Errors = append(errorResponse.Errors, tokenError)
+		c.Status(400)
+		return c.JSON(errorResponse)
+	}
 	cookie := fiber.Cookie{
-		Name:  "jwt",
-		Value: generateJWT(user.Email),
+		Name:  "token",
+		Value: token,
 	}
 	c.Cookie(&cookie)
 
@@ -128,10 +136,19 @@ func Signup(c *fiber.Ctx) error {
 	//Inserting user into the db
 	database.DB.InsertOne(context.TODO(), user)
 
-	//Creating and sending a jwt cookie
+	//Creating and sending a paseto cookie
+	token, err := token.GeneratePasetoToken(user.Email)
+	if err != nil {
+		tokenError := models.Error{}
+		tokenError.Message = "Token creation failed"
+		errorResponse := models.ErrorResponse{}
+		errorResponse.Errors = append(errorResponse.Errors, tokenError)
+		c.Status(400)
+		return c.JSON(errorResponse)
+	}
 	cookie := fiber.Cookie{
-		Name:  "jwt",
-		Value: generateJWT(user.Email),
+		Name:  "token",
+		Value: token,
 	}
 	c.Cookie(&cookie)
 
@@ -143,28 +160,10 @@ func Signup(c *fiber.Ctx) error {
 func Signout(c *fiber.Ctx) error {
 
 	cookie := fiber.Cookie{
-		Name:    "jwt",
+		Name:    "token",
 		Expires: time.Now().Add(-time.Minute),
 	}
 	c.Cookie(&cookie)
 
 	return c.SendString("Bye Bye")
-}
-
-func generateJWT(email string) string {
-
-	//move env variable checking to when the app starts
-	signingKey := []byte(os.Getenv("JWT_KEY"))
-
-	token := jwt.New(jwt.SigningMethodHS256)
-
-	claims := token.Claims.(jwt.MapClaims)
-
-	claims["email"] = email
-	claims["iss"] = "auth"
-	claims["exp"] = time.Now().Add(time.Minute * 5).Unix()
-
-	tokenString, _ := token.SignedString(signingKey)
-
-	return tokenString
 }

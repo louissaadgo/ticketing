@@ -11,7 +11,7 @@ func Init(app *fiber.App) {
 	app.Post("/api/users/signin", controllers.Signin)
 	app.Post("/api/users/signup", controllers.Signup)
 	app.Post("/api/users/signout", controllers.Signout)
-	app.Use(middlewares.IsValidJWT)
+	app.Use(middlewares.IsValidPasetoToken)
 	app.Get("/api/users/currentuser", controllers.GetCurrentUser)
 
 }
