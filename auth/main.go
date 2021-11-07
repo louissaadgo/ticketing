@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	//Add testing later
 	app := fiber.New()
 
 	routes.Init(app)

@@ -16,11 +16,11 @@ spec:
         - name: auth
           image: louissaadgo/auth
           env:
-            - name: JWT_KEY
+            - name: PASETO_KEY
               valueFrom:
                 secretKeyRef:
-                  name: jwt-secret
-                  key: JWT_KEY
+                  name: paseto-secret
+                  key: PASETO_KEY
 ---
 apiVersion: v1
 kind: Service
