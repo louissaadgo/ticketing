@@ -5,4 +5,6 @@ stop:
 	&& kubectl delete deployment auth-depl \
 	&& kubectl delete ingress ingress-service \
 	&& kubectl delete service auth-mongo-srv \
-	&& kubectl delete deployment auth-mongo-depl
+	&& kubectl delete deployment auth-mongo-depl \
+	&& kubectl delete service client-srv \
+	&& kubectl delete deployment client-depl
