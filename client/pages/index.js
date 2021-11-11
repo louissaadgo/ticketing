@@ -1,12 +1,22 @@
 import buildClient from "../api/build-client";
 
-const LandingPage = ({currentUser}) => {
-  return currentUser ? <h1>You are signed in</h1> : <h1>You are not signed in</h1>
+const LandingPage = (currentUser) => {
+  return <h1>You are signed in as:</h1>
 };
 
 LandingPage.getInitialProps = async (context) => {
-  const {data} = await buildClient(context).get('/api/users/currentuser')
-  return data
+  let data = {};
+  await buildClient(context).get('/api/users/currentuser')
+  .then((response) => {
+    data = response.data;
+  })
+  .catch((err) => {
+    console.log(err.message);
+  })
+  console.log(data)
+  let currentUser = data.currentUser;
+  console.log(currentUser)
+  return currentUser
 };
 
 export default LandingPage;
