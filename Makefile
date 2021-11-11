@@ -9,4 +9,6 @@ stop:
 	&& kubectl delete service client-srv \
 	&& kubectl delete deployment client-depl \
 	&& kubectl delete service tickets-srv \
-	&& kubectl delete deployment tickets-depl
+	&& kubectl delete deployment tickets-depl \
+	&& kubectl delete service tickets-mongo-srv \
+	&& kubectl delete deployment tickets-mongo-depl
