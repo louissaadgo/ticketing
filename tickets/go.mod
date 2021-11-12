@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/gofiber/fiber/v2 v2.21.0
+	github.com/google/uuid v1.3.0
 	github.com/o1egl/paseto v1.0.0
 	go.mongodb.org/mongo-driver v1.7.4
 )

@@ -8,7 +8,7 @@ import (
 
 func Init(app *fiber.App) {
 
+	app.Get("/api/tickets/:id", controllers.RetreiveTicket)
 	app.Use(middlewares.IsValidPasetoToken)
 	app.Post("/api/tickets", controllers.CreateTicket)
-
 }
