@@ -32,6 +32,9 @@ func CreateTicket(c *fiber.Ctx) error {
 		return c.JSON(errorResponse)
 	}
 
+	//Adding userid to ticket
+	ticket.UserID = c.GetRespHeader("CurrentUser")
+
 	//Inserting ticket into DB
 	//Handle db error later
 	database.DB.InsertOne(context.TODO(), ticket)
