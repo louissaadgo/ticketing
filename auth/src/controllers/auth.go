@@ -134,6 +134,7 @@ func Signup(c *fiber.Ctx) error {
 	}
 
 	//Inserting user into the db
+	//Handle db error later
 	database.DB.InsertOne(context.TODO(), user)
 
 	//Creating and sending a paseto cookie
