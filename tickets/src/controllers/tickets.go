@@ -37,7 +37,7 @@ func CreateTicket(c *fiber.Ctx) error {
 
 	//Adding userid and ticketid to ticket
 	ticket.UserID = c.GetRespHeader("CurrentUser")
-	ticket.TicketID = uuid.New()
+	ticket.TicketID = uuid.New().String()
 
 	//Inserting ticket into DB
 	//Handle db error later
