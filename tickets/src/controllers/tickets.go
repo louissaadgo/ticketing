@@ -11,6 +11,19 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+func UpdateTicket(c *fiber.Ctx) error {
+
+	ticketID := c.Params("id")
+	ticket := models.Ticket{}
+	database.DB.FindOne(context.TODO(), bson.M{"ticketid": ticketID}).Decode(&ticket)
+	newTicket := models.Ticket{}
+	c.BodyParser(&newTicket)
+	database.DB.FindOneAndUpdate(context.TODO(), bson.M{"ticketid": ticketID}, bson.D{{"$set", bson.D{{"price", newTicket.Price}}}, {"$set", bson.D{{"title", newTicket.Title}}}})
+	database.DB.FindOne(context.TODO(), bson.M{"ticketid": ticketID}).Decode(&ticket)
+
+	return c.JSON(ticket)
+}
+
 func GetAllTickets(c *fiber.Ctx) error {
 
 	//Handle error later
