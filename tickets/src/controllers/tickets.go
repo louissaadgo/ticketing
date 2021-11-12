@@ -11,6 +11,21 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+func GetAllTickets(c *fiber.Ctx) error {
+
+	//Handle error later
+	cur, _ := database.DB.Find(context.TODO(), bson.D{})
+	response := models.ManyTicketsResponse{}
+
+	for cur.Next(context.TODO()) {
+		ticket := models.Ticket{}
+		cur.Decode(&ticket)
+		response.Tickets = append(response.Tickets, ticket)
+	}
+
+	return c.JSON(response)
+}
+
 func CreateTicket(c *fiber.Ctx) error {
 
 	ticket := models.Ticket{}

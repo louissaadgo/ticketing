@@ -7,6 +7,10 @@ type Ticket struct {
 	UserID   string `json:"userid" bson:"userid"`
 }
 
+type ManyTicketsResponse struct {
+	Tickets []Ticket `json:"tickets" bson:"tickets"`
+}
+
 func (ticket *Ticket) Validate() bool {
 	return true
 }
