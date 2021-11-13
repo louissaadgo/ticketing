@@ -11,4 +11,6 @@ stop:
 	&& kubectl delete service tickets-srv \
 	&& kubectl delete deployment tickets-depl \
 	&& kubectl delete service tickets-mongo-srv \
-	&& kubectl delete deployment tickets-mongo-depl
+	&& kubectl delete deployment tickets-mongo-depl \
+	&& kubectl delete service nats-srv \
+	&& kubectl delete deployment nats-depl
