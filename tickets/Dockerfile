@@ -15,7 +15,14 @@ COPY ./ ./
 RUN go build
 
 #Creating final image
+#Starting base image
 FROM alpine
+
+#Setting up working directory
 WORKDIR /
+
+#Copying go executable from previous image
 COPY --from=builder ./app/tickets ./
+
+#Setting up starting command
 CMD [ "./tickets" ]
