@@ -8,7 +8,9 @@ type User struct {
 }
 
 func (user *User) ValidateUserModel() bool {
-	//Add regexp later
+	if len(user.Email) < 6 {
+		return false
+	}
 	return true
 }
 
