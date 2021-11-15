@@ -11,6 +11,9 @@ func (user *User) ValidateUserModel() bool {
 	if len(user.Email) < 6 {
 		return false
 	}
+	if len(user.Password) < 7 {
+		return false
+	}
 	return true
 }
 
