@@ -50,10 +50,10 @@ func Signin(c *fiber.Ctx) error {
 		queryError := models.Error{
 			Message: "User not found",
 		}
-		queryErrorResponse := models.ErrorResponse{}
-		queryErrorResponse.Errors = append(queryErrorResponse.Errors, queryError)
+		ErrorResponse := models.ErrorResponse{}
+		ErrorResponse.Errors = append(ErrorResponse.Errors, queryError)
 		c.Status(400)
-		return c.JSON(queryErrorResponse)
+		return c.JSON(ErrorResponse)
 	}
 
 	//Checking credentials
