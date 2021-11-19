@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/louissaadgo/ticketing/auth/src/bus"
 	"github.com/louissaadgo/ticketing/auth/src/database"
 	"github.com/louissaadgo/ticketing/auth/src/models"
 	"github.com/louissaadgo/ticketing/auth/src/token"
@@ -155,6 +156,7 @@ func Signup(c *fiber.Ctx) error {
 
 	user.Password = ""
 
+	bus.STANPublish("auth:created-user", []byte("Hi im created"))
 	return c.JSON(user)
 }
 
