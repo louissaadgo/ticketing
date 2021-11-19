@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/nats-io/stan.go"
 )
 
 var SC stan.Conn
 
-func CreateSTANConnection(id string) {
+func CreateSTANConnection() {
+	id := uuid.New().String()
 	SC, _ = stan.Connect("ticketing", id, stan.NatsURL("http://localhost:4222"))
 	//handle error later
 }
