@@ -14,7 +14,7 @@ var (
 
 func CreateSTANConnection() {
 	id := uuid.New().String()
-	SC, _ = stan.Connect("ticketing", id, stan.NatsURL("http://localhost:4222"))
+	SC, _ = stan.Connect("ticketing", id, stan.NatsURL("http://nats-srv:4222"))
 	//handle error later
 }
 
