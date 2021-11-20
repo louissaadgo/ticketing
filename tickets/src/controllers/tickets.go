@@ -27,7 +27,7 @@ func UpdateTicket(c *fiber.Ctx) error {
 		return c.JSON(err)
 	}
 
-	bus.STANPublish(bus.TicketCreatedEvent, sb)
+	bus.STANPublish(bus.TicketUpdatedEvent, sb)
 
 	return c.JSON(ticket)
 }
