@@ -40,13 +40,13 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	<-quit
-	bus.SC.NatsConn()
 
 	if err := app.Shutdown(); err != nil {
 		fmt.Println("Graceful Shutdown failed: ", err)
 	}
 	fmt.Println("Graceful Shutdown success")
 	time.Sleep(10 * time.Second)
+
 	if err := bus.SC.Close(); err != nil {
 		fmt.Println("Graceful Stan Shutdown failed: ", err)
 	}
