@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/louissaadgo/ticketing/tickets/src/bus"
@@ -35,7 +34,6 @@ func main() {
 		fmt.Println("Graceful Shutdown failed: ", err)
 	}
 	fmt.Println("Graceful Shutdown success")
-	time.Sleep(10 * time.Second)
 
 	if err := bus.SC.Close(); err != nil {
 		fmt.Println("Graceful Stan Shutdown failed: ", err)
