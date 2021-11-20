@@ -1,6 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/louissaadgo/ticketing/tickets/src/bus"
 	"github.com/louissaadgo/ticketing/tickets/src/database"
@@ -17,5 +23,22 @@ func main() {
 
 	database.Connect()
 
-	app.Listen(":3000")
+	go app.Listen(":3000")
+
+	quit := make(chan os.Signal, 1)
+
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+	<-quit
+
+	if err := app.Shutdown(); err != nil {
+		fmt.Println("Graceful Shutdown failed: ", err)
+	}
+	fmt.Println("Graceful Shutdown success")
+	time.Sleep(10 * time.Second)
+
+	if err := bus.SC.Close(); err != nil {
+		fmt.Println("Graceful Stan Shutdown failed: ", err)
+	}
+	fmt.Println("Graceful Stan Shutdown success")
 }
