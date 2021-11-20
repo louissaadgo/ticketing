@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"github.com/louissaadgo/ticketing/tickets/src/bus"
 	"github.com/louissaadgo/ticketing/tickets/src/database"
 	"github.com/louissaadgo/ticketing/tickets/src/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -70,6 +72,12 @@ func CreateTicket(c *fiber.Ctx) error {
 	//Inserting ticket into DB
 	//Handle db error later
 	database.DB.InsertOne(context.TODO(), ticket)
+
+	sb, err := json.Marshal(ticket)
+	if err != nil {
+		return c.JSON(err)
+	}
+	bus.STANPublish(bus.TicketCreatedEvent, sb)
 
 	return c.JSON(ticket)
 }
