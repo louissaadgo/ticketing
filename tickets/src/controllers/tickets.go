@@ -20,8 +20,14 @@ func UpdateTicket(c *fiber.Ctx) error {
 	database.DB.FindOne(context.TODO(), bson.M{"ticketid": ticketID}).Decode(&ticket)
 	newTicket := models.Ticket{}
 	c.BodyParser(&newTicket)
-	database.DB.FindOneAndUpdate(context.TODO(), bson.M{"ticketid": ticketID}, bson.D{{"$set", bson.D{{"price", newTicket.Price}}}, {"$set", bson.D{{"title", newTicket.Title}}}})
+	database.DB.FindOneAndUpdate(context.TODO(), bson.M{"ticketid": ticketID}, bson.M{"$set": bson.M{"price": newTicket.Price, "title": newTicket.Title}})
 	database.DB.FindOne(context.TODO(), bson.M{"ticketid": ticketID}).Decode(&ticket)
+	sb, err := json.Marshal(ticket)
+	if err != nil {
+		return c.JSON(err)
+	}
+
+	bus.STANPublish(bus.TicketCreatedEvent, sb)
 
 	return c.JSON(ticket)
 }
