@@ -8,7 +8,9 @@ import (
 	"github.com/nats-io/stan.go"
 )
 
-var SC stan.Conn
+var (
+	SC stan.Conn
+)
 
 func CreateSTANConnection() {
 	id := uuid.New().String()
