@@ -30,7 +30,6 @@ func main() {
 	if err := app.Shutdown(); err != nil {
 		fmt.Println("Graceful Shutdown failed: ", err)
 	}
-	fmt.Println("Graceful Shutdown success")
 
 	// if err := bus.SC.Close(); err != nil {
 	// 	fmt.Println("Graceful Stan Shutdown failed: ", err)
