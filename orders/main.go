@@ -6,9 +6,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 	"github.com/louissaadgo/ticketing/orders/src/bus"
 	"github.com/louissaadgo/ticketing/orders/src/database"
+	"github.com/louissaadgo/ticketing/orders/src/routes"
 )
 
 func main() {
