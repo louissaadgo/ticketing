@@ -16,6 +16,10 @@ spec:
         - name: tickets
           image: louissaadgo/tickets
           env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: PASETO_KEY
               valueFrom:
                 secretKeyRef:

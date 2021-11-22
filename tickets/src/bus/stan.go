@@ -2,9 +2,9 @@ package bus
 
 import (
 	"fmt"
+	"os"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/nats-io/stan.go"
 )
 
@@ -13,7 +13,7 @@ var (
 )
 
 func CreateSTANConnection() {
-	id := uuid.New().String()
+	id := os.Getenv("NATS_CLIENT_ID")
 	SC, _ = stan.Connect("ticketing", id, stan.NatsURL("http://nats-srv:4222"))
 	//handle error later
 }
