@@ -28,7 +28,7 @@ func main() {
 	<-quit
 
 	if err := app.Shutdown(); err != nil {
-		fmt.Println("Graceful Shutdown failed: ", err)
+		fmt.Println("Graceful Shutdown failed:", err)
 	}
 
 	// if err := bus.SC.Close(); err != nil {
